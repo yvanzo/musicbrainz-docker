@@ -42,7 +42,7 @@ $DOCKER_COMPOSE_CMD exec db apt-get install \
 
 PGDATA=/var/lib/postgresql/data
 $DOCKER_COMPOSE_CMD exec db \
-    sudo -u postgres /usr/lib/postgresql/9.5/bin/pg_ctl start -w -D "$PGDATA"
+    sudo -u musicbrainz /usr/lib/postgresql/9.5/bin/pg_ctl start -w -D "$PGDATA"
 sleep 5
 
 CURRENT_PG_VERSION=$($DOCKER_COMPOSE_CMD exec db psql -U musicbrainz -d musicbrainz_db -tAq -c 'SHOW server_version_num')
@@ -70,7 +70,7 @@ $DOCKER_COMPOSE_CMD exec db /bin/bash /tmp/do-pg_upgrade.sh
 $DOCKER_COMPOSE_CMD exec musicbrainz \
     sh -c 'eval "$(perl -Mlocal::lib)"; cd admin; ./psql --system READWRITE < sql/updates/20200518-pg12-after-upgrade.sql 2>&1'
 
-$DOCKER_COMPOSE_CMD exec db sudo -u postgres "$PGDATA"/analyze_new_cluster.sh
+$DOCKER_COMPOSE_CMD exec db sudo -u musicbrainz "$PGDATA"/analyze_new_cluster.sh
 $DOCKER_COMPOSE_CMD exec db rm "$PGDATA"/analyze_new_cluster.sh
 
 $DOCKER_COMPOSE_CMD rm --stop --force db
